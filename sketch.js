@@ -1,93 +1,74 @@
-let x, y, rad, xDir, yDir;
-let r, g, b;
-let angle1, angle2, angle3;
+let x, y, radius;
+let xDir, yDir, speed;
+let numNotes;
 
 function setup() {
-  createCanvas(windowWidth, windowHeight);
-  angleMode(DEGREES);
+  createCanvas(400, 400);
   
-  r = 250;
-  g = 200;
-  b = 218;
-  
+  //position start for head is random
   x = random(width);
   y = random(height);
+    
+  //bunny head: size of circle
+  radius = 50;
   
-  rad = 10;
+  //bunny direction
+  xDir = random(-2,2);
+  yDir = random(-2,2);
   
-  xDir = random(-1,1);
-  yDir = random(-1,1);
+  //bunny speed
+  speed = 1.5;
   
-  angle1 = 0;
-  angle2 = 30;
-  angle3 = 180;
+  //number of music notes for the loop
+  numNotes = 5;
 }
+
 
 function draw() {
-  background(250,140,159);
-  
-  rad = mapSinAngle(5,15,angle1);
-  
-  r = mapSinAngle(20,255,angle1);
-  g = mapSinAngle(100,255,angle2);
-  b = mapSinAngle(100,200,angle3);
-  //this number here is numShapes from below in functiondisplay
-  display(r,g,b,5);
-  //calling function from below
-  update(2);
-  bounds();
-  
-  //moving 
-  angle1 += 3;
-  angle2 += 2;
-  angle3 += 4;
-}
-
-////////MY FUNCTIONS!!!//////////
-
-//cR as in circleRed
-function display(cR,cG,cB,numShapes){
-  //where I draw my shape
-  
-  for(i = numShapes; i > 0; i--)
-   {
-     let offSetX = mapSinAngle(-5,5,angle2);
-     let offSetY = mapSinAngle(-6,6,angle3);
-     fill(cR,cB,cG);
-     circle(x+offSetX*i, y+offSetY*i, rad*i);
-     //doing the xi changes every time
-    
-    
-    }
-  
-}
-
-function update(speed){
-  //where I set movement to my shape
-  //where I update my variables
-  
-  x += xDir*speed;
-  y += yDir*speed;
+  background(255,199,202);
+ 
+  // can change number of notes
+  for (let i = 0; i < numNotes; i++) {
+    let xPos = 50+i*70;
+    let yPos = 200; 
+    //MUSIC NOTE DRAWING
+    strokeWeight(4);
+    ellipse(xPos,yPos,15,10);
+    line(xPos+7.5,yPos,xPos+7.5,yPos-30);
+    line(xPos+7.5,yPos-30, xPos+15,yPos-22);
   }
+  
+  //DRAWING THE BUNNY
+  noStroke();
+  fill(255,255,255);
+  ellipse(x-15,y-20,20,65); //left ear
+  ellipse(x+15,y-20,20,65); //right ear
+  circle(x,y,radius); //bunny head
+  
+  fill(107,43,0);
+  stroke(107,43,0);
+  strokeWeight(1.5)
+  circle(x-15,y+2,7); //left eye
+  circle(x+15,y+2,7); //right eye
+  circle(x,y+7,9); //nose
+  line(x-5,y+15,x,y+10) //left mouth
+  line(x+5,y+15,x,y+10) //right mouth
+  
+  //CALLING THE FUNCTIONS
+  updateBunny(speed); //move the bunny
+  
+  //keeping bunny in the canvas
+  if (x - radius / 2 < 0 || x + radius / 2 > width) {
+    xDir *= -1; }
+  if (y - radius / 2 < 0 || y + radius / 2 > height) {
+    yDir *= -1; }
 
-function bounds(){
-  //here is where I keep my shape inside the canvas
-  if ((x > width)||(x <0))
-    {
-      xDir = -xDir;
-    }
-  if ((y > height)||(y <0)) 
-  {
-    yDir *= -1;
-  }
 }
 
-function mapSinAngle(newA, newB, myAngle){
-  //this is the return function where I map the Sin values to custom values, with a custom angle
-  let myMap;
-  
-  myMap = map(sin(myAngle), -1, 1, newA, newB);
-  
-  return myMap;
-}
+/// MY FUNCTIONS !!! //
 
+// move the bunny
+function updateBunny(speed) {
+  x += xDir * speed;
+  y += yDir * speed;
+}
